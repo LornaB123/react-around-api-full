@@ -1,0 +1,25 @@
+{
+  "name": "around-express",
+  "version": "1.0.0",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node app.js",
+    "dev": "nodemon app.js"
+  },
+  "author": "Lorna",
+  "license": "ISC",
+  "devDependencies": {
+    "eslint": "^7.20.0",
+    "eslint-config-airbnb-base": "^14.2.1",
+    "eslint-plugin-import": "^2.22.1",
+    "nodemon": "^2.0.7"
+  },
+  "dependencies": {
+    "express": "^4.17.1",
+    "helmet": "^4.4.1",
+    "mongoose": "^5.12.2"
+  },
+  "keywords": [],
+  "description": ""
+}
