@@ -1,90 +1,131 @@
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
+const dotenv = require('dotenv');
+
+const BadRequestError = require('../errors/bad-request-err');
+const NotFoundError = require('../errors/not-found-err');
+const AuthenticationError = require('../errors/auth-err');
+const ConflictError = require('../errors/conflict-err');
+
 const User = require('../models/user');
 
-function getUsers(req, res) {
+dotenv.config();
+const { NODE_ENV, JWT_SECRET } = process.env;
+
+function getUsers(req, res, next) {
   User.find({})
-    .then((users) => res.status(200).send({ data: users }))
-    .catch(() => res.status(500).send({ message: 'Internal Server Error.' }));
+    .select("+password")
+    .then((users) => res.send({ data: users }))
+    .catch(next);
 }
 
-function getOneUser(req, res) {
-  User.findById(req.params.id)
+function getOneUser(req, res, next) {
+  User.findById(req.params.id === "me" ? req.user._id : req.params.id)
+    .select("+password")
     .then((user) => {
-      if (!user) {
-        res.status(404).send({ message: 'User cannot be found' });
+      if (user) {
+        res.send({ data: user });
+      } else {
+        throw new NotFoundError("User not found.");
       }
-      return res.status(200).send({ data: user });
     })
     .catch((err) => {
-      if (err.name === 'ValidationError') {
-        res.status(404).send({ message: 'Validation failed:  user cannot be found.' });
-      } else if (err.name === 'CastError') {
-        res.status(400).send({ message: 'User not found.' });
-      } else {
-        res.status(500).send({ message: 'Internal server error.' });
+      if (err.name === "CastError" || err.name === "TypeError") {
+        throw new NotFoundError("User not found.");
       }
-    });
+      next(err);
+    })
+    .catch(next);
 }
 
 function createUser(req, res) {
   const { name, about, avatar } = req.body;
-  User.create({ name, about, avatar })
+  User.create({ name, about, avatar, email, password })
+  bcrypt.hash(password, 10)
+  .then((hash) => User.create({
+    name,
+    about,
+    avatar,
+    email,
+    password: hash
+  }))
+    .then((user) => res.status(201).send({ _id: user._id }))
+    .catch((err) => {
+      if (err.name === 'ValidationError') {
+        throw new BadRequestError('Unable to create user.');
+      } else if (err.name === 'MongoError') {
+        throw new ConflictError('User already exists');
+      }
+      next(err);
+    })
+    .catch(next);
+};
+
+function updateUser(req, res, next) {
+  const { name, about } = req.body;
+  User.findByIdAndUpdate(
+    { _id: req.user._id },
+    { $set: { name, about } },
+    { new: true, runValidators: true }
+  )
+    .select('+password')
     .then((user) => res.send({ data: user }))
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        res.status(404).send({ message: 'Validation failed:  user cannot be created.' });
-      } else if (err.name === 'CastError') {
-        res.status(400).send({ message: 'User not found.' });
-      } else {
-        res.status(500).send({ message: 'Internal server error.' });
+        throw new BadRequestError(
+          'Unable to update user.'
+         );
       }
-    });
-}
-
-function updateUser(req, res) {
-  const { name, about } = req.body;
-  User.findByIdAndUpdate(
-    req.user._id,
-    { name, about },
-    { new: true, runValidators: true },
-  )
-    .then((user) => {
-      if (!user) {
-        res.status(404).send({ message: 'User not found' });
-      }
-      res.status(200).send({ user });
+      next(err);
     })
-    .catch((err) => {
-      if (err.name === 'ValidationError') {
-        res.status(400).send({ message: 'Validation failed:  user cannot be updated.' });
-      } else if (err.name === 'CastError') {
-        res.status(404).send({ message: 'User not found.' });
-      } else {
-        res.status(500).send({ message: 'Internal server error' });
-      }
-    });
+    .catch(next);
 }
 
-function updateAvatar(req, res) {
+function updateAvatar(req, res, next) {
   User.findByIdAndUpdate(
     { _id: req.user._id },
     { avatar: req.body.avatar },
-    { new: true, runValidators: true },
+    { new: true, runValidators: true }
   )
+    .select("+password")
+    .then((user) => res.send({ data: user }))
+    .catch((err) => {
+      if (err.name === "ValidationError") {
+        throw new BadRequestError(
+          "Unable to update avatar. Please try again later."
+        );
+      }
+      next(err);
+    })
+    .catch(next);
+}
+
+function login(req, res, next) {
+  const { email, password } = req.body;
+  User.findOne({ email })
+    .select('+password')
     .then((user) => {
       if (!user) {
-        res.status(404).send({ message: 'User cannot be found' });
-      }
-      return res.status(200).send({ data: user });
-    })
-    .catch((err) => {
-      if (err.name === 'ValidationError') {
-        res.status(400).send({ message: 'Validation failed:  avatar cannot be updated.' });
-      } else if (err.name === 'CastError') {
-        res.status(404).send({ message: 'User not found.' });
+        throw new AuthenticationError('Incorrect email or password.');
       } else {
-        res.status(500).send({ message: 'Internal server error' });
+        req._id = user._id;
+        return bcrypt.compare(password, user.password);
       }
-    });
+    })
+    .then((matched) => {
+      if (!matched) {
+        throw new AuthError('Incorrect email or password.');
+      }
+      const token = jwt.sign(
+        { _id: req._id },
+        NODE_ENV === 'production' ? JWT_SECRET : 'dev-secret',
+        { expiresIn: '7d' }
+      );
+      res.header('authorization', `Bearer ${token}`);
+      res.cookie('token', token, { httpOnly: true });
+      res.status(200).send({ token });
+    })
+    .catch(next);
 }
 
 module.exports = {
@@ -93,4 +134,5 @@ module.exports = {
   createUser,
   updateUser,
   updateAvatar,
+  login
 };
