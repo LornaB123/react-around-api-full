@@ -2,10 +2,10 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const dotenv = require('dotenv');
 
-const BadRequestError = require('../errors/bad-request-err');
-const NotFoundError = require('../errors/not-found-err');
-const AuthenticationError = require('../errors/auth-err');
-const ConflictError = require('../errors/conflict-err');
+const BadRequestError = require('../errors/bad-req-error');
+const NotFoundError = require('../errors/not-found-error');
+const AuthenticationError = require('../errors/authentication-error');
+const ConflictError = require('../errors/conflict-error');
 
 const User = require('../models/user');
 
@@ -37,6 +37,18 @@ function getOneUser(req, res, next) {
     })
     .catch(next);
 }
+
+const getCurrentUser = (req, res, next) => {
+  User.findById(req.user._id)
+    .then((user) => {
+      if (user) {
+        res.send(user._doc);
+      } else {
+        throw new NotFoundError('Imaginary profile detected.  No such profile found');
+      }
+    })
+    .catch(next)
+};
 
 function createUser(req, res) {
   const { name, about, avatar } = req.body;
@@ -114,7 +126,7 @@ function login(req, res, next) {
     })
     .then((matched) => {
       if (!matched) {
-        throw new AuthError('Incorrect email or password.');
+        throw new AuthenticationError('Incorrect email or password.');
       }
       const token = jwt.sign(
         { _id: req._id },
@@ -131,6 +143,7 @@ function login(req, res, next) {
 module.exports = {
   getUsers,
   getOneUser,
+  getCurrentUser,
   createUser,
   updateUser,
   updateAvatar,
