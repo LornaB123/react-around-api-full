@@ -1,0 +1,25 @@
+.header__icon {
+    display: none;
+    transition: all .3s;
+}
+.header__icon:hover {
+    opacity: .6;
+}
+
+@media screen and (max-width: 600px) {
+.header__icon {
+    all: unset;
+    width: 25px;
+    height: 25px;
+    background-image: url("data:image/svg+xml;charset=utf8,%3Csvg width='16' height='14' viewBox='0 0 16 14' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Crect width='16' height='2' rx='1' fill='white'/%3E%3Crect y='6' width='16' height='2' rx='1' fill='white'/%3E%3Crect y='12' width='16' height='2' rx='1' fill='white'/%3E%3C/svg%3E");
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    background-position: center;
+    display: block;
+    cursor: pointer;
+    transition: all .2s;
+}
+.header__icon_cross {
+    background-image: url("data:image/svg+xml;charset=utf8,%3Csvg width='14' height='14' viewBox='0 0 14 14' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Crect width='17.7672' height='1.77672' rx='0.888361' transform='matrix(0.697757 0.716335 -0.697757 0.716335 1.23975 0)' fill='white'/%3E%3Crect width='17.7672' height='1.77672' rx='0.888361' transform='matrix(0.697757 -0.716335 0.697757 0.716335 0.363281 12.7273)' fill='white'/%3E%3C/svg%3E");
+}
+}
