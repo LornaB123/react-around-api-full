@@ -1,9 +1,9 @@
+require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
 const { celebrate, Joi, errors, isCelebrateError } = require('celebrate');
 const cors = require('cors');
 const path = require('path');
-const dotenv = require('dotenv');
 const helmet = require('helmet');
 
 const { requestLogger, errorLogger } = require('./middleware/logger');

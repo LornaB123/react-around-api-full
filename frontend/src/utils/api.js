@@ -96,11 +96,12 @@ class Api {
 // project server URL = https://around.nomoreparties.co/v1/ + ADD Group ID here(group-7)...,  
 //authorization = TOKEN( a950b923-6d6c-4927-9948-6833c1950cc9 ) 
 const api = new Api({ 
-    baseUrl: "https://around.nomoreparties.co/v1/group-7", 
-    headers: { 
-        authorization: "a950b923-6d6c-4927-9948-6833c1950cc9", 
-        "Content-Type": "application/json" 
-    } 
+    // baseUrl: "https://around.nomoreparties.co/v1/group-7", 
+    // headers: { 
+    //     authorization: "a950b923-6d6c-4927-9948-6833c1950cc9", 
+    //     "Content-Type": "application/json" 
+    // } 
+    baseUrl: 'http://localhost: 3001', 
 }); 
 
 export default api;
