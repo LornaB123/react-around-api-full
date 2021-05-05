@@ -3,10 +3,10 @@ const express = require('express');
 const mongoose = require('mongoose');
 const { celebrate, Joi, errors, isCelebrateError } = require('celebrate');
 const cors = require('cors');
-const path = require('path');
 const helmet = require('helmet');
 
 const { requestLogger, errorLogger } = require('./middleware/logger');
+const { createUser, login } = require('./controllers/userController');
 const auth = require('./middleware/auth');
 const BadRequestError = require('./errors/bad-req-error');
 const NotFoundError = require('./errors/not-found-error');
@@ -36,6 +36,7 @@ app.use(errors());
 
 app.use('/', userRouter);
 app.use('/', cardRouter);
+app.use(auth);
 
 app.post(
   '/signup',
