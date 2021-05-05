@@ -8,7 +8,7 @@ const {
 
 router.get('/cards', getCards);
 
-cardRouter.post('/cards', 
+router.post('/cards', 
   celebrate({
     body: Joi.object().keys({
       name: Joi.string().required().min(2).max(30),
