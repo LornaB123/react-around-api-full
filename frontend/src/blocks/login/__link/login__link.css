@@ -1,0 +1,23 @@
+.login__link {
+    all: unset;
+    font-weight: normal;
+    font-size: 18px;
+    line-height: 22px;
+    text-align: right;
+    color: white;
+    cursor: pointer;
+    margin-top: 6px;
+}
+
+.login__link:hover {
+    opacity: .6;
+    cursor: pointer;
+  }
+
+@media screen and (max-width: 500px) {
+    .login__link {
+        font-weight: normal;
+        font-size: 14px;
+        line-height: 17px;
+    }
+}

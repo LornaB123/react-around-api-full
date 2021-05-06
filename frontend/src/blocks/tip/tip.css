@@ -1,0 +1,20 @@
+@import url("./__close/tip__close.css");
+@import url("./__error/tip__error.css");
+@import url("./__icon/tip__icon.css");
+@import url("./__text/tip__text.css");
+@import url("./__wrapper/tip__wrapper.css");
+@import url("./_visible/tip_visible.css");
+
+.tip {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    z-index: 1;
+    background-color: rgba(0, 0, 0, .5);
+    opacity: 0;
+    visibility: hidden;
+    transition: all .3s;
+}
