@@ -14,7 +14,7 @@ class Api {
     } 
  
     //GET specified URL -user-info 
-    getUserInfo() { 
+    getUserInfo(token) { 
         return fetch(this._baseUrl + '/users/me/', { 
             headers: {
                 "Content-Type": "application/json",
