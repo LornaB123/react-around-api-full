@@ -23,6 +23,6 @@ module.exports = (req, res, next) => {
   } catch (err) {
         throw new AuthenticationError('Authorization Required');
   }
-  req.user = payload;
-  next();
+  req.user = payload; //assigns payload to the request object
+  next(); //sending request to next middleware
 };

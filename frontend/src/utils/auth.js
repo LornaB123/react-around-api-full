@@ -22,8 +22,18 @@ export const authorize = (password, email) => {
       },
       body: JSON.stringify({ password, email })
     })
-    .then(res => res.json())
-};
+    .then((res) => res.ok ? res.json() : Promise.reject('Error' + res.statusText))
+    .then((data) => {
+      if (data.token){
+        localStorage.setItem('jwt', data.token);
+        return data;
+      } else {
+        return;
+      }
+    })
+    .catch(err => console.log(err))
+  };
+
 export const checkToken = (token) => {
     return fetch(`${BASE_URL}/users/me`, {
       method: 'GET',
@@ -31,7 +41,8 @@ export const checkToken = (token) => {
         'Accept': 'application/json',
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${token}`,
-      }
+      },
     })
-    .then(res => res.json())
+    .then(res => res.ok ? res.json() : Promise.reject('Error' + res.statusText))
+    .then((res) => {return res});
 }
