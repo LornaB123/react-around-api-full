@@ -16,7 +16,10 @@ class Api {
     //GET specified URL -user-info 
     getUserInfo() { 
         return fetch(this._baseUrl + '/users/me/', { 
-            headers: this._headers 
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`
+              }, 
         }) 
         .then(res => res.ok ? res.json() : Promise.reject('Error' + res.statusText)) 
     } 
