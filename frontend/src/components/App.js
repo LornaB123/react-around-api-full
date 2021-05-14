@@ -74,7 +74,7 @@ function App() {
 
   useEffect(() => {
     api
-      .getUserInfo()
+      .getUserInfo(token)
       .then((res) => {
         setCurrentUser(res);
       })

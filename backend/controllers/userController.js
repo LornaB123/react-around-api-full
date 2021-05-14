@@ -39,13 +39,15 @@ function getOneUser(req, res, next) {
 }
 
 const getCurrentUser = (req, res, next) => {
-  User.findById(req.user._id)
+  User.findById(req.params.id === 'me' ? req.user._id : req.params.id)
+    .select('+password')
     .then((user) => {
       if (user) {
-        res.send(user._doc);
+        res.send({ data: user });
       } else {
-        throw new NotFoundError('Imaginary profile detected.  No such profile found');
+        throw new NotFoundError('User not found.');
       }
+      next(err);
     })
     .catch(next)
 };
@@ -66,7 +68,7 @@ function createUser(req, res) {
       if (err.name === 'ValidationError') {
         throw new BadRequestError('Unable to create user.');
       } else if (err.name === 'MongoError') {
-        throw new ConflictError('User already exists');
+        throw new ConflictError('User already exists.');
       }
       next(err);
     })
@@ -104,7 +106,7 @@ function updateAvatar(req, res, next) {
     .catch((err) => {
       if (err.name === "ValidationError") {
         throw new BadRequestError(
-          "Unable to update avatar. Please try again later."
+          "Unable to update avatar."
         );
       }
       next(err);
