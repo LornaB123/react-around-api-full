@@ -101,7 +101,7 @@ const api = new Api({
     //     authorization: "a950b923-6d6c-4927-9948-6833c1950cc9", 
     //     "Content-Type": "application/json" 
     // } 
-    baseUrl: 'http://localhost: 3001', 
+    baseUrl: 'http://localhost:3001', 
 }); 
 
 export default api;
