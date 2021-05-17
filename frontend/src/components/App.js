@@ -39,9 +39,9 @@ function App() {
     const isLiked = card.likes.some((i) => i._id === currentUser._id);
     let likeStatus;
     if (isLiked === false) {
-      likeStatus = api.addLike(card._id);
+      likeStatus = api.addLike(card._id, token);
     } else {
-      likeStatus = api.removeLike(card._id);
+      likeStatus = api.removeLike(card._id, token);
     }
     likeStatus
       .then((newCard) => {
@@ -54,7 +54,7 @@ function App() {
 
   function handleCardDelete(card) {
     api
-      .removeCard(card._id)
+      .removeCard(card._id, token)
       .then(() => {
         const cardList = cards.filter((c) => c._id !== card._id);
         setCards(cardList);
@@ -65,7 +65,7 @@ function App() {
   //call server for profile content
   useEffect(() => {
     api
-      .getInitialCards()
+      .getInitialCards(token)
       .then((res) => {
         setCards(res);
       })
@@ -74,7 +74,7 @@ function App() {
 
   useEffect(() => {
     api
-      .getUserInfo()
+      .getUserInfo(token)
       .then((res) => {
         setCurrentUser(res);
       })
@@ -98,9 +98,9 @@ function App() {
     setLoggedIn(false);
   }, []);
 
-  function handleUpdateUser({ name, about }) {
+  function handleUpdateUser({ name, about }, token) {
     api
-      .setUserInfo({ name, about })
+      .setUserInfo({ name, about }, token)
       .then((res) => {
         setCurrentUser(res);
       })
@@ -108,9 +108,9 @@ function App() {
       .finally(() => closeAllPopups());
   }
 
-  function handleUpdateAvatar(avatar) {
+  function handleUpdateAvatar(avatar, token) {
     api
-      .setUserAvatar(avatar)
+      .setUserAvatar(avatar, token)
       .then((res) => {
         setCurrentUser(res);
       })
@@ -118,9 +118,9 @@ function App() {
       .finally(() => closeAllPopups());
   }
 
-  function handleAddPlace({ name, link }) {
+  function handleAddPlace({ name, link }, token) {
     api
-      .addCard({ name, link })
+      .addCard({ name, link }, token)
       .then((newCard) => {
         setCards([newCard, ...cards]);
       })

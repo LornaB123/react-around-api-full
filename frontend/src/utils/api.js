@@ -6,30 +6,39 @@ class Api {
     } 
  
     // GET specified URL-cards 
-    getInitialCards() { 
+    getInitialCards(token) { 
         return fetch(this._baseUrl + '/cards/', { 
-            headers:  this._headers 
+            headers:  {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${token}`,
+            }, 
         }) 
         .then(res => res.ok ? res.json() : Promise.reject('Error' + res.statusText)) 
     } 
  
     //GET specified URL -user-info 
-    getUserInfo() { 
+    getUserInfo(token) { 
         return fetch(this._baseUrl + '/users/me/', { 
-            headers: this._headers
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${token}`,
+            },
         }) 
         .then(res => res.ok ? res.json() : Promise.reject('Error' + res.statusText)) 
     } 
  
       getAppInfo(){ 
           //gather all info together and render all at once 
-          return Promise.all([this.getUserInfo(), this.getInitialCards()]) 
+          return Promise.all([this.getUserInfo(token), this.getInitialCards(token)]) 
       } 
  
     //POST speicifed url -cards 
-    addCard({ name, link }) { 
+    addCard({ name, link }, token) { 
         return fetch(this._baseUrl + '/cards/', { 
-            headers:  this._headers, 
+            headers:  {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${token}`,
+            }, 
             method: "POST", 
             body: JSON.stringify({ 
                 name, 
@@ -41,9 +50,12 @@ class Api {
     } 
  
     // //DELETE specified url =cardID 
-    removeCard(cardID) { 
+    removeCard(cardID, token) { 
          return fetch(this._baseUrl + '/cards/' + cardID, { 
-             headers:  this._headers, 
+             headers:  {
+                 'Content-Type': 'application/json',
+                 Authorization: `Bearer ${token}`,
+             }, 
              method: "DELETE", 
              }) 
          .then(res => res.ok ? res.json() : Promise.reject('Error' + res.statusText)) 
@@ -51,27 +63,36 @@ class Api {
  
     //PUT specified url cardID 
     //DELETE specified url cardID 
-    addLike(cardID) { 
+    addLike(cardID, token) { 
         return fetch(this._baseUrl + '/cards/likes/' + cardID, { 
-            headers:  this._headers, 
+            headers:  {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${token}`,
+            }, 
             method: "PUT", 
             }) 
         .then(res => res.ok ? res.json() : Promise.reject('Error' + res.statusText)) 
     } 
  
-    removeLike(cardID){ 
+    removeLike(cardID, token){ 
         return fetch(this._baseUrl + '/cards/likes/' + cardID, { 
-            headers:  this._headers, 
+            headers:  {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${token}`,
+            }, 
             method: "DELETE", 
             }) 
         .then(res => res.ok ? res.json() : Promise.reject('Error' + res.statusText))
     } 
  
     //PATCH user-info 
-    setUserInfo({ name, about }) { 
+    setUserInfo({ name, about }, token) { 
         return fetch(this._baseUrl + '/users/me/', { 
             method: "PATCH", 
-            headers: this._headers, 
+            headers: {
+                'Cotnent-Type': 'application/json',
+                Authorization: `Bearer ${token}`,
+            }, 
             body: JSON.stringify({ 
                 name, 
                 about 
@@ -81,9 +102,12 @@ class Api {
 } 
  
     //PATCH avatar 
-    setUserAvatar(avatar) { 
+    setUserAvatar(avatar, token) { 
         return fetch(this._baseUrl + '/users/me/avatar/', { 
-            headers: this._headers, 
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${token}`,
+            }, 
             method: "PATCH", 
             body: JSON.stringify({ 
                 avatar 
