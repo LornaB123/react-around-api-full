@@ -32,8 +32,9 @@ function App() {
   const [email, setEmail] = useState("");
   const [registered, setRegistered] = useState(false);
   const [isOpenToolTip, setIsOpenToolTip] = useState(false);
-
+  
   const history = useHistory();
+  const token = localStorage.getItem("token");
 
   function handleCardLike(card, token) {
     const isLiked = card.likes.some((i) => i._id === currentUser._id);
@@ -86,9 +87,8 @@ function App() {
   }, []);
 
   useEffect(() => {
-    const jwt = localStorage.getItem("jwt");
-    if (jwt) {
-      return checkToken(jwt)
+    if (token) {
+      return checkToken(token)
         .then(({ data }) => {
           if (data) {
             setLoggedIn(true);
@@ -186,7 +186,7 @@ function App() {
     authorize(password, email)
       .then(({ token }) => {
         if (token) {
-          localStorage.setItem("jwt", token);
+          localStorage.setItem("token", token);
           setLoggedIn(true);
           setEmail(email);
           return;
