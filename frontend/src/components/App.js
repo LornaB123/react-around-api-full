@@ -35,7 +35,7 @@ function App() {
 
   const history = useHistory();
 
-  function handleCardLike(card) {
+  function handleCardLike(card, token) {
     const isLiked = card.likes.some((i) => i._id === currentUser._id);
     let likeStatus;
     if (isLiked === false) {
@@ -52,7 +52,7 @@ function App() {
       .catch((err) => console.log(err));
   }
 
-  function handleCardDelete(card) {
+  function handleCardDelete(card, token) {
     api
       .removeCard(card._id, token)
       .then(() => {
@@ -70,16 +70,16 @@ function App() {
         setCards(res);
       })
       .catch((err) => console.log(err));
-  }, []);
+  }, [token]);
 
   useEffect(() => {
-    api
+      api
       .getUserInfo(token)
       .then((res) => {
         setCurrentUser(res);
       })
       .catch((err) => console.log(err));
-  }, []);
+  }, [token]);
 
   useEffect(() => {
     const jwt = localStorage.getItem("jwt");
