@@ -64,22 +64,26 @@ function App() {
 
   //call server for profile content
   useEffect(() => {
+    if(token) {
     api
       .getInitialCards(token)
       .then((res) => {
         setCards(res);
       })
       .catch((err) => console.log(err));
+    }
   }, [token]);
 
   useEffect(() => {
+    if(token) {
       api
       .getUserInfo(token)
       .then((res) => {
         setCurrentUser(res);
       })
       .catch((err) => console.log(err));
-  }, [token]);
+    }
+  }, []);
 
   useEffect(() => {
     const jwt = localStorage.getItem("jwt");
