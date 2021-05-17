@@ -84,7 +84,7 @@ function App() {
       })
       .catch((err) => console.log(err));
     }
-  }, []);
+  }, [token]);
 
   useEffect(() => {
     if (token) {
@@ -100,7 +100,7 @@ function App() {
         .catch((err) => console.log(err));
     }
     setLoggedIn(false);
-  }, []);
+  }, [token]);
 
   function handleUpdateUser({ name, about }, token) {
     api
