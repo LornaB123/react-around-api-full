@@ -32,9 +32,10 @@ function App() {
   const [email, setEmail] = useState("");
   const [registered, setRegistered] = useState(false);
   const [isOpenToolTip, setIsOpenToolTip] = useState(false);
+  const [token, setToken] = useState('');
+  const [show, setShow] = useState(true);
   
   const history = useHistory();
-  const token = localStorage.getItem("token");
 
   function handleCardLike(card, token) {
     const isLiked = card.likes.some((i) => i._id === currentUser._id);
@@ -166,7 +167,9 @@ function App() {
   function toggleToolTip() {
     setIsOpenToolTip(!isOpenToolTip);
   }
+
   function handleRegister(password, email) {
+    setShow(false);
     return register(password, email)
       .then((res) => {
         if (res.data) {
@@ -180,13 +183,17 @@ function App() {
         setRegistered(false);
         toggleToolTip();
       })
-      .catch((err) => console.log(err));
+      .catch((err) => console.log(err))
+      .finally(() => setShow(true));
   }
+
   function handleAuth(password, email) {
+    setShow(false);
     authorize(password, email)
       .then(({ token }) => {
         if (token) {
           localStorage.setItem("token", token);
+          setToken(token);
           setLoggedIn(true);
           setEmail(email);
           return;
@@ -194,8 +201,10 @@ function App() {
         setRegistered(false);
         toggleToolTip();
       })
-      .catch((err) => console.log(err));
+      .catch((err) => console.log(err))
+      .finally(() => setShow(true));
   }
+
   function handleLogin() {
     setLoggedIn(!loggedIn);
   }
